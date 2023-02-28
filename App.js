@@ -1,16 +1,25 @@
 import React, { useState, useRef } from "react";
 import {
+  Alert,
   StyleSheet,
   Text,
   View,
+  useWindowDimensions,
   TouchableOpacity,
   SafeAreaView,
+  ScrollView,
   TextInput,
   KeyboardAvoidingView,
+  Image,
 } from "react-native";
 import { Camera } from "expo-camera";
 import Icons from "react-native-vector-icons";
 import FAIcons from "react-native-vector-icons/FontAwesome5";
+import MCIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import * as Clipboard from "expo-clipboard";
+//import TFLite from "react-native-tensorflow-lite";
+
+import logo from "./assets/Logo3.jpg";
 
 //import * as handpose from "handpose";
 
@@ -20,6 +29,8 @@ function App() {
   const cameraRef = useRef(null);
   const [showText, setshowText] = useState("");
   const [getStarted, setgetStarted] = useState(false);
+
+  const layout = useWindowDimensions();
 
   React.useEffect(() => {
     (async () => {
@@ -35,15 +46,15 @@ function App() {
     return <Text>No access to camera</Text>;
   }
 
-  // const predictGesture = async () => {
-  //   const predictions = await handpose.estimateHands(
-  //     cameraRef.current.videoElement
-  //   );
-  //   if (predictions.length > 0) {
-  //     const hand = predictions[0].landmarks;
-  //     // Convert hand landmarks to text here
-  //   }
-  // };
+  const copyToClipboard = async () => {
+    Alert.alert("Copied", `The copied text is :- \n${showText}`);
+    await Clipboard.setStringAsync(showText);
+  };
+
+  const fetchCopiedText = async () => {
+    const text = await Clipboard.getStringAsync();
+    setshowText(text);
+  };
 
   return (
     <KeyboardAvoidingView
@@ -51,122 +62,147 @@ function App() {
       style={styles.container}
       enabled={true}
     >
-      <SafeAreaView style={{ flex: 1, marginTop: 30 }}>
-        {getStarted ? (
-          <View style={{ flex: 1 }}>
-            <Camera
-              style={{ flex: 0.7, margin: 10 }}
-              type={type}
-              ref={cameraRef}
-            >
+      <SafeAreaView
+        style={{
+          backgroundColor: "#2B8ADA",
+          width: "100%",
+        }}
+      >
+        <ScrollView
+          style={{
+            width: "100%",
+            alignSelf: "center",
+            backgroundColor: "#e8f0fe",
+            marginTop: 20,
+          }}
+          showsVerticalScrollIndicator={false}
+          nestedScrollEnabled={true}
+        >
+          <Image
+            source={logo}
+            style={{
+              width: 320,
+              height: 80,
+              alignSelf: "center",
+              padding: 0,
+            }}
+          />
+          {getStarted ? (
+            <View style={{ flex: 1 }}>
+              <Camera
+                style={{ flex: 1, height: (layout.height * 3) / 5 }}
+                type={type}
+                ref={cameraRef}
+              >
+                <View
+                  style={{
+                    flex: 1,
+                    backgroundColor: "transparent",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                  }}
+                >
+                  <TouchableOpacity
+                    style={{
+                      alignSelf: "flex-end",
+                      alignItems: "center",
+                      backgroundColor: "gray",
+                      padding: 10,
+                      borderRadius: 80,
+                      marginBottom: 10,
+                      marginRight: 10,
+                    }}
+                    onPress={() => {
+                      setType(
+                        type === Camera.Constants.Type.back
+                          ? Camera.Constants.Type.front
+                          : Camera.Constants.Type.back
+                      );
+                    }}
+                  >
+                    <MCIcons
+                      name="camera-flip"
+                      size={25}
+                      color={"white"}
+                      style={{}}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{
+                      alignSelf: "flex-end",
+                      alignItems: "center",
+                      backgroundColor: "red",
+                      padding: 10,
+                      borderRadius: 80,
+                      marginBottom: 10,
+                    }}
+                    onPress={() => {
+                      setgetStarted(false);
+                    }}
+                  >
+                    <MCIcons
+                      name="close"
+                      size={25}
+                      color={"white"}
+                      style={{ alignSelf: "center" }}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </Camera>
+            </View>
+          ) : (
+            <View style={{ flexDirection: "column" }}>
               <View
                 style={{
                   flex: 1,
-                  backgroundColor: "transparent",
-                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  width: "90%",
+                  alignSelf: "center",
+                  marginVertical: 15,
+                  backgroundColor: "white",
+                  borderRadius: 10,
+                  padding: 20,
                 }}
               >
-                <TouchableOpacity
-                  style={{
-                    flex: 1,
-                    alignSelf: "flex-end",
-                    alignItems: "center",
-                  }}
-                  onPress={() => {
-                    setType(
-                      type === Camera.Constants.Type.back
-                        ? Camera.Constants.Type.front
-                        : Camera.Constants.Type.back
-                    );
-                  }}
+                <Text style={{ alignSelf: "center", fontSize: 18 }}>
+                  " Talk to a man in a language he understands, that goes to his
+                  head. Talk to him in his own language, that goes to his heart.
+                  " The name “Vaani” refers to the Indian Goddess of Speech,
+                  Goddess Saraswati.{" "}
+                </Text>
+
+                <Text
+                  style={{ alignSelf: "center", fontSize: 18, marginTop: 10 }}
                 >
-                  <Text
-                    style={{
-                      fontSize: 18,
-                      color: "white",
-                      alignSelf: "center",
-                      backgroundColor: "gray",
-                      padding: 10,
-                      borderRadius: 10,
-                      marginBottom: 10,
-                    }}
-                  >
-                    {" "}
-                    Flip Camera{" "}
-                  </Text>
-                </TouchableOpacity>
+                  Vaani is a real time sign language interpreter that is used to
+                  bridge the gap between the vocally muted and the rest of the
+                  world. With the help of Vaani we become their voice. It is a
+                  deep learning based model embedded in a web application which
+                  takes live webcam feed as input and outputs the performed sign
+                  language as text on the screen. It uses a CNN LSTM based deep
+                  learning model architecture to detect the action performed in
+                  each frame and after the action is completely performed, the
+                  value associated with it is displayed.
+                </Text>
               </View>
-            </Camera>
-            <View style={{ flex: 0.3 }}>
+
               <TouchableOpacity
-                onPress={() => {
-                  setshowText(
-                    showText == ""
-                      ? "Hn bhai aa gye apni maut ka circus dekhne"
-                      : ""
-                  );
-                }}
+                onPress={() => setgetStarted(true)}
                 style={{
                   marginVertical: 10,
-                  alignSelf: "center",
-                }}
-              >
-                <Text style={{ fontWeight: "bold", fontSize: 15 }}>
-                  Predict Gesture
-                </Text>
-              </TouchableOpacity>
-              <View
-                style={{
-                  flexDirection: "row",
-                  borderWidth: 1,
-                  borderRadius: 10,
-                  borderColor: "black",
-                  width: "95%",
                   padding: 10,
+                  paddingHorizontal: 20,
+                  backgroundColor: "limegreen",
+                  borderRadius: 10,
+                  justifyContent: "center",
                   alignSelf: "center",
-                  justifyContent: "space-between",
                 }}
               >
-                <TextInput
-                  style={{
-                    flex: 1,
-                    alignSelf: "center",
-                  }}
-                  multiline={true}
-                  onChangeText={(text) => setshowText(text)}
-                  value={showText}
-                ></TextInput>
-                <FAIcons
-                  name="copy"
-                  size={20}
-                  style={{
-                    alignSelf: "center",
-                  }}
-                  //onPress={()=>}
-                />
-              </View>
+                <Text style={{ color: "white" }}>Get Started</Text>
+              </TouchableOpacity>
             </View>
-          </View>
-        ) : (
-          <View style={{ flex: 1, flexDirection: "row", alignSelf: "center" }}>
-            <TouchableOpacity
-              style={{
-                width: 100,
-                alignSelf: "center",
-                justifyContent: "center",
-                backgroundColor: "limegreen",
-                flexDirection: "row",
-                padding: 10,
-                borderRadius: 10,
-              }}
-              onPress={() => setgetStarted(true)}
-            >
-              <Text style={{ color: "white", fontWeight: "bold" }}>
-                Get Started
-              </Text>
-            </TouchableOpacity>
-          </View>
-        )}
+          )}
+        </ScrollView>
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
@@ -178,7 +214,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "white",
+    backgroundColor: "#e8f0fe",
   },
 });
 
