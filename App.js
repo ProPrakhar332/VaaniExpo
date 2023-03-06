@@ -46,16 +46,6 @@ function App() {
     return <Text>No access to camera</Text>;
   }
 
-  const copyToClipboard = async () => {
-    Alert.alert("Copied", `The copied text is :- \n${showText}`);
-    await Clipboard.setStringAsync(showText);
-  };
-
-  const fetchCopiedText = async () => {
-    const text = await Clipboard.getStringAsync();
-    setshowText(text);
-  };
-
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -149,6 +139,21 @@ function App() {
                   </TouchableOpacity>
                 </View>
               </Camera>
+              <View style={{ alignSelf: "center", marginVertical: 20 }}>
+                <Text
+                  style={{
+                    fontWeight: "bold",
+                    marginVertical: 10,
+                    textDecorationStyle: "double",
+                    textDecorationColor: "black",
+                    textDecorationLine: "underline",
+                    fontSize: 18,
+                  }}
+                >
+                  Translation
+                </Text>
+                <Text>Hello brother</Text>
+              </View>
             </View>
           ) : (
             <View style={{ flexDirection: "column" }}>

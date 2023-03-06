@@ -3,6 +3,8 @@
     "name": "vaani",
     "slug": "vaani",
     "version": "1.0.0",
+    "privacy":"public",
+    "description":"Converting Hand sign to text",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
