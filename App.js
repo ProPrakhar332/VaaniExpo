@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Alert,
   StyleSheet,
@@ -17,11 +17,10 @@ import Icons from "react-native-vector-icons";
 import FAIcons from "react-native-vector-icons/FontAwesome5";
 import MCIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import * as Clipboard from "expo-clipboard";
-//import TFLite from "react-native-tensorflow-lite";
+import * as tf from "@tensorflow/tfjs";
+//import "@tensorflow/tfjs-react-native";
 
 import logo from "./assets/Logo3.jpg";
-
-//import * as handpose from "handpose";
 
 function App() {
   const [hasPermission, setHasPermission] = useState(null);
@@ -29,14 +28,45 @@ function App() {
   const cameraRef = useRef(null);
   const [showText, setshowText] = useState("");
   const [getStarted, setgetStarted] = useState(false);
+  const modelJson = require("./model/model_new.json");
+  const modelWeights = require("./model/model_new.h5");
 
   const layout = useWindowDimensions();
 
-  React.useEffect(() => {
+  useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
       setHasPermission(status === "granted");
     })();
+  }, []);
+
+  useEffect(() => {
+    const bundleResourceIOExample = async () => {
+      console.log("Inside loading model");
+
+      await tf
+        .ready()
+        .then(() => {
+          console.log("Loaded successfully");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+      const model = await tf.loadLayersModel(
+        tf.io.browserFiles([modelJson, modelWeights])
+      );
+
+      // console.log(modelJson);
+      // console.log(modelWeights);
+
+      // const model = await tf.loadLayersModel(
+      //   bundleResourceIO(modelJson, modelWeights)
+      // );
+      // const res = model.predict(tf.randomNormal([1, 28, 28, 1]));
+      // console.log(res);
+    };
+    bundleResourceIOExample();
   }, []);
 
   if (hasPermission === null) {
