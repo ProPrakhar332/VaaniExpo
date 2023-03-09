@@ -47,15 +47,15 @@ function App() {
       await tf
         .ready()
         .then(() => {
-          console.log("Loaded successfully");
+          console.log("Tensorflow Loaded successfully");
         })
         .catch((error) => {
           console.log(error);
         });
 
-      const model = await tf.loadLayersModel(
-        tf.io.browserFiles([modelJson, modelWeights])
-      );
+      // const model = await tf.loadLayersModel(
+      //   tf.io.browserFiles([modelJson, modelWeights])
+      // );
 
       // console.log(modelJson);
       // console.log(modelWeights);
